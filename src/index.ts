@@ -22,7 +22,8 @@ class Bot extends AkairoClient {
 
         this.commandHandler = new CommandHandler(this, {
             directory: './commands/',
-            prefix: process.env.prefix// Options for the command handler goes here.
+            prefix: process.env.prefix,
+            commandUtil: true
         });
         this.inhibitorHandler = new InhibitorHandler(this, {
             // directory: './inhibitors/' Disabled to prevent errors when no files in directory
@@ -36,7 +37,7 @@ class Bot extends AkairoClient {
         this.commandHandler.useListenerHandler(this.listenerHandler);
 
         this.commandHandler.loadAll();
-        this.inhibitorHandler.loadAll();
+        // this.inhibitorHandler.loadAll();
         this.listenerHandler.loadAll();
 
         this.listenerHandler.setEmitters({
