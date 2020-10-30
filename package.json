@@ -1,0 +1,26 @@
+{
+  "name": "vesalius",
+  "version": "0.0.1",
+  "description": "A general, all purpose bot",
+  "main": "./build/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "repository": "git+https://github.com/SwanX1/Vesalius.git",
+  "author": "SwanX1 <karliscern@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SwanX1/Vesalius/issues"
+  },
+  "homepage": "https://github.com/SwanX1/Vesalius#readme",
+  "dependencies": {
+    "discord-akairo": "^8.1.0",
+    "discord.js": "^12.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@types/ws": "^7.2.9",
+    "typescript": "next"
+  }
+}
