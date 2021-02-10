@@ -1,4 +1,7 @@
 {
     "DiscordAPIToken": "<copy your bot token hree>",
-    "prefix": "!"
+    "prefix": "!",
+    "owner": [
+        "<owner discord id here>"
+    ]
 }

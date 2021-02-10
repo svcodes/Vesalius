@@ -1,10 +1,15 @@
 import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from "discord-akairo";
+import { Snowflake } from "discord.js";
+
+// Change Directory to right one
+if (!process.cwd().endsWith('build'))
+    process.chdir('build');
 
 // Load environment variables from config.json if not present.
 const config = require('../config.json');
-for (let k in config) {
-    if (typeof process.env[k] === 'undefined') {
-        process.env[k] = config[k];
+for (const key in config) {
+    if (Object.prototype.hasOwnProperty.call(config, key)) {
+        process.env[key] = config[key];
     }
 }
 
@@ -14,8 +19,15 @@ class Bot extends AkairoClient {
     public inhibitorHandler: InhibitorHandler;
 
     constructor() {
+        let ownerID: Snowflake[];
+        // @ts-ignore
+        if (process.env['owner'] instanceof Array) {
+            ownerID = process.env['owner'];
+        } else {
+            ownerID = [process.env['owner']];
+        }
         super({
-            ownerID: '197664739763945472'
+            ownerID
         }, {
             disableMentions: 'everyone'
         });
