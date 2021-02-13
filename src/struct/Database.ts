@@ -7,6 +7,7 @@ export interface GuildSchema {
     id: Snowflake;
     disabledmodules: Array<string>;
     prefix: string;
+    minecraftstatusaddress: string | null;
 }
 
 export interface DatabaseCache {
@@ -39,8 +40,9 @@ export class DatabaseManager {
             await this.query(`
                 CREATE TABLE IF NOT EXISTS guilds (
                     id VARCHAR NOT NULL PRIMARY KEY,
-                    disabledmodules VARCHAR [],
-                    prefix VARCHAR(5) NOT NULL
+                    disabledmodules VARCHAR [] NOT NULL,
+                    prefix VARCHAR(5) NOT NULL,
+                    minecraftstatusaddress VARCHAR(256)
                 );
             `);
         } else {
@@ -88,5 +90,41 @@ export class DatabaseManager {
         }
         this.cache.guilds.get(id).prefix = prefix;
         return (updateQuery.rows[0] as GuildSchema).prefix;
+    }
+
+    async getDefaultMinecraftAddress(id: Snowflake): Promise<string> {
+        if (this.cache.guilds.has(id)) {
+            return this.cache.guilds.get(id).minecraftstatusaddress;
+        } else {
+            const guildQuery = await this.query(`
+                SELECT * FROM guilds WHERE id=$1;
+            `, [id]);
+            if (guildQuery.rowCount === 1) {
+                const address = (guildQuery.rows[0] as GuildSchema).minecraftstatusaddress;
+                this.cache.guilds.set(id, guildQuery.rows[0]);
+                return address;
+            } else {
+                throw new Error(`Database returned ${guildQuery.rowCount} addresses for given guild id.`);
+            }
+        }
+    }
+
+    async setDefaultMinecraftAddress(id: Snowflake, address: string): Promise<string> {
+        if (this.cache.guilds.has(id) && this.cache.guilds.get(id).minecraftstatusaddress === address)
+            return address;
+        const updateQuery = await this.query(`
+            UPDATE guilds
+            SET minecraftstatusaddress=$1
+            WHERE id=$2
+            RETURNING *;
+        `, [address, id]);
+        if (updateQuery.rowCount !== 1) {
+            throw new Error(`Database returned ${updateQuery.rowCount} guilds matching the criteria`);
+        }
+        if (!this.cache.guilds.has(id)) {
+            this.cache.guilds.set(id, updateQuery.rows[0])
+        }
+        this.cache.guilds.get(id).minecraftstatusaddress = address;
+        return (updateQuery.rows[0] as GuildSchema).minecraftstatusaddress;
     }
 }
