@@ -18,10 +18,12 @@
   "dependencies": {
     "discord-akairo": "^8.1.0",
     "discord.js": "^12.5.1",
-    "performance-now": "^2.1.0"
+    "performance-now": "^2.1.0",
+    "pg": "^8.5.1"
   },
   "devDependencies": {
     "@types/node": "latest",
+    "@types/pg": "^7.14.9",
     "@types/ws": "^7.4.0",
     "typescript": "next"
   }

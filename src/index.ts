@@ -1,5 +1,4 @@
-import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from "discord-akairo";
-import { Snowflake } from "discord.js";
+import { VesaliusBot } from "./struct/VesaliusBot";
 
 // Change Directory to right one
 if (!process.cwd().endsWith('build'))
@@ -9,68 +8,41 @@ if (!process.cwd().endsWith('build'))
 const config = require('../config.json');
 for (const key in config) {
     if (Object.prototype.hasOwnProperty.call(config, key)) {
-        process.env[key] = config[key];
-    }
-}
-
-class Bot extends AkairoClient {
-    public commandHandler: CommandHandler;
-    public listenerHandler: ListenerHandler;
-    public inhibitorHandler: InhibitorHandler;
-
-    constructor() {
-        let ownerID: Snowflake[];
-        // @ts-ignore
-        if (process.env['owner'] instanceof Array) {
-            ownerID = process.env['owner'];
+        if (key === "database") {
+            const database = config[key];
+            for (const dbkey in database) {
+                if (Object.prototype.hasOwnProperty.call(database, dbkey)) {
+                    process.env[`database.${dbkey}`] = database[dbkey];
+                }
+            }
         } else {
-            ownerID = [process.env['owner']];
+            process.env[key] = config[key];
         }
-        super({
-            ownerID
-        }, {
-            disableMentions: 'everyone'
-        });
-
-        this.commandHandler = new CommandHandler(this, {
-            directory: './commands/',
-            prefix: process.env.prefix,
-            commandUtil: true
-        });
-        this.inhibitorHandler = new InhibitorHandler(this, {
-            // directory: './inhibitors/' Disabled to prevent errors when no files in directory
-        });
-
-        this.listenerHandler = new ListenerHandler(this, {
-            directory: './listeners/'
-        });
-
-        this.commandHandler.useInhibitorHandler(this.inhibitorHandler);
-        this.commandHandler.useListenerHandler(this.listenerHandler);
-
-        this.commandHandler.loadAll();
-        // this.inhibitorHandler.loadAll();
-        this.listenerHandler.loadAll();
-
-        this.listenerHandler.setEmitters({
-            commandHandler: this.commandHandler,
-            inhibitorHandler: this.inhibitorHandler,
-            listenerHandler: this.listenerHandler
-        });        
     }
 }
 
-const client = new Bot();
+const client = new VesaliusBot({
+    database: process.env['database.database'],
+    host: process.env['database.host'],
+    password: process.env['database.password'],
+    port: Number(process.env['database.port']),
+    user: process.env['database.user']
+});
 
-client.login(process.env.DiscordAPIToken);
+client.login(process.env.DiscordAPIToken).catch(err => {
+    console.log('Database Error:', err);
+    process.exit(1);
+});
 
 client.on('ready', () => {
     if (!client.user) return;
     console.log(`Logged in as ${client.user.tag}`);
 });
 
-process.once('SIGUSR2', function () {
-    console.log('Graceful shutdown...')
+
+process.once('SIGINT', async () => {
+    console.log('Graceful shutdown...');
     client.destroy();
+    await client.database.pool.end();
     process.exit(0);
 });
