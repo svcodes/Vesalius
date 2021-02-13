@@ -66,7 +66,7 @@ export class DatabaseManager {
                 this.cache.guilds.set(id, guildQuery.rows[0]);
                 return prefix;
             } else {
-                throw new Error(`Database returned ${guildQuery.rowCount} prefix for given guild id.`);
+                throw new Error(`Database returned ${guildQuery.rowCount} prefixes for given guild id.`);
             }
         }
     }
