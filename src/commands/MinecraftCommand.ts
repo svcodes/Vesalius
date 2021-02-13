@@ -72,16 +72,12 @@ export default class MinecraftCommand extends Command {
             if (this.cache[cacheName].lastCache < Date.now() - 300000) {
                 this.cache[cacheName].data = await getStatus(address, { port });
                 this.cache[cacheName].lastCache = Date.now();
-                console.log(`outdated cache: ${cacheName}`);
-            } else {
-                console.log(`using cache: ${cacheName}`);
             }
         } else {
             this.cache[cacheName] = {
                 data: await getStatus(address, { port }),
                 lastCache: Date.now()
             };
-            console.log(`new cache: ${cacheName}`);
         }
         return this.cache[cacheName].data;
     }
