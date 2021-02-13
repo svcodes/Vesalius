@@ -15,6 +15,8 @@
 
 This repository contains the source code of the Vesalius bot.
 
+The bot runs on Node.JS (developed in v15, production is recommended for v14), Discord-Akairo, and in turn Discord.JS, as well as PostgreSQL.
+
 <hr>
 
 <h2 id="issuepr">How to submit an issue / PR</h2>
