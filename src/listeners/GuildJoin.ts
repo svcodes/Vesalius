@@ -23,7 +23,7 @@ export default class GuildJoinListener extends Listener {
                 INSERT INTO guilds (id, disabledmodules, prefix)
                 VALUES (
                     $1,
-                    ARRAY::VARCHAR[],
+                    ARRAY[]::VARCHAR[],
                     $2
                 )
                 RETURNING id;
