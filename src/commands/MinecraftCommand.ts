@@ -3,6 +3,9 @@ import { Message, MessageEmbed, Util } from "discord.js";
 import { VesaliusBot } from "../struct/VesaliusBot";
 import { status as getStatus } from "minecraft-server-util";
 import { StatusResponse } from "minecraft-server-util/dist/model/StatusResponse";
+
+const forbiddenAddresses: RegExp = /^(192\.(168|1(8|9))\.\d{1,3}\.\d{1,3})|(localhost)|(255\.255\.255\.255)|((10|127)\.\d{1,3}\.\d{1,3}\.\d{1,3})/i;
+
 export default class MinecraftCommand extends Command {
     private cache: Record<string, { lastCache: number; data: StatusResponse }>;
 
@@ -28,6 +31,15 @@ export default class MinecraftCommand extends Command {
                     );
                 } else {
                     if (message.member.hasPermission('MANAGE_GUILD')) {
+                        if (forbiddenAddresses.test(subcommands[1].split(':')[0])) {
+                            message.channel.send(
+                                new MessageEmbed()
+                                    .setColor(Util.resolveColor("RED"))
+                                    .setTitle("What are you trying to do?")
+                                    .setDescription("This address is forbidden to be used.")
+                            );
+                            return;
+                        }
                         const address = await client.database.setDefaultMinecraftAddress(message.guild.id, subcommands[1]);
                         message.channel.send(
                             new MessageEmbed()
@@ -45,8 +57,23 @@ export default class MinecraftCommand extends Command {
                     }
                 }
             } else {
+                let serverStatus: StatusResponse;
                 const [host, port = 25565] = subcommands[0].split(':');
-                const serverStatus = await this.getStatusCached(host, Number(port));
+                if (forbiddenAddresses.test(host)) {
+                    message.channel.send(
+                        new MessageEmbed()
+                            .setColor(Util.resolveColor("RED"))
+                            .setTitle("What are you trying to do?")
+                            .setDescription("This address is forbidden to be used.")
+                    );
+                    return;
+                }
+                try {
+                    serverStatus = await this.getStatusCached(host, Number(port));
+                } catch (err) {
+                    MinecraftCommand.handleError(message, subcommands[0], err);
+                    return;
+                }
                 message.channel.send(MinecraftCommand.createEmbed(serverStatus));
             }
         } else {
@@ -60,7 +87,13 @@ export default class MinecraftCommand extends Command {
                 );
             } else {
                 const [host, port = 25565] = address.split(':');
-                const serverStatus = await this.getStatusCached(host, Number(port));
+                let serverStatus: StatusResponse;
+                try {
+                    serverStatus = await this.getStatusCached(host, Number(port));
+                } catch (err) {
+                    MinecraftCommand.handleError(message, address, err);
+                    return;
+                }
                 message.channel.send(MinecraftCommand.createEmbed(serverStatus));
             }
         }
@@ -123,5 +156,61 @@ export default class MinecraftCommand extends Command {
             embed.addField('Players', playerString, false);
         }
         return embed;
+    }
+
+    private static handleError(message: Message, address: string, err: any): void {
+        if (typeof err === 'undefined') {
+            message.channel.send(
+                new MessageEmbed()
+                    .setColor(Util.resolveColor('RED'))
+                    .setTitle('The server seems to be offline')
+                    .setDescription(`Please check that the server address is spelled right.`)
+                    .setTimestamp()
+            );
+        } else switch (err.code) {
+            case 'EAI_AGAIN':
+            case 'ENOTFOUND':
+                message.channel.send(
+                    new MessageEmbed()
+                        .setColor(Util.resolveColor('RED'))
+                        .setTitle('The server address provided is invalid')
+                        .setDescription(`The address you provided, \`${address}\`, is invalid. Please check that it is spelled right.`)
+                );
+                break;
+            case 'ECONNREFUSED':
+                message.channel.send(
+                    new MessageEmbed()
+                        .setColor(Util.resolveColor('RED'))
+                        .setTitle('The server is refusing connections')
+                        .setDescription(`The server might be offline.\nPlease check that the server address is spelled right.`)
+                        .setTimestamp()
+                );
+                break;
+            default:
+                message.channel.send(
+                    new MessageEmbed()
+                        .setColor(Util.resolveColor('RED'))
+                        .setTitle('An unexpected error occurred')
+                        .setDescription('Please report this error at [the Github](https://github.com/SwanX1/Vesalius/issues).\nError Details:')
+                        .addFields([
+                            {
+                                name: 'Code',
+                                value: `\`${err.code}\``,
+                                inline: true
+                            },
+                            {
+                                name: 'Error Number',
+                                value: `\`${err.errno}\``,
+                                inline: true
+                            },
+                            {
+                                name: 'Extended Information',
+                                value: `\`\`\`\n${err.toString()}\n\`\`\``
+                            }
+                        ])
+                        .setTimestamp()
+                );
+                break;
+        }
     }
 }
