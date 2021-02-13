@@ -14,7 +14,7 @@ export default class HelpCommand extends Command {
             if (!commandCollection.has(value)) commandCollection.set(value, []);
             commandCollection.get(value).push(key);
         });
-        
+        commandCollection.delete('eval'); // Hide debug command
         const helpEmbed = new MessageEmbed().setColor(Util.resolveColor('BLUE')).setFooter('ik this isn\'t helpful yet');
 
         commandCollection.forEach((value, key) => {
