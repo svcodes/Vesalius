@@ -25,7 +25,6 @@ export class DatabaseManager {
         this.cache = {
             guilds: new Collection()
         };
-        this.setup();
     }
     
     async setup(): Promise<void> {
