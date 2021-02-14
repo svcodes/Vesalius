@@ -11,7 +11,8 @@ export default class MinecraftCommand extends Command {
 
     constructor() {
         super('minecraft', {
-            aliases: ['server', 'minecraft', 'mc']
+            aliases: ['server', 'minecraft', 'mc'],
+            typing: true
         });
 
         this.cache = {};
