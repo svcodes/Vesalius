@@ -1,5 +1,5 @@
-import { Command } from "discord-akairo";
-import { Message, MessageEmbed, Util } from "discord.js";
+import { Command } from 'discord-akairo';
+import { Message, MessageEmbed } from 'discord.js';
 import now from 'performance-now';
 
 export default class EvalCommand extends Command {
@@ -14,7 +14,7 @@ export default class EvalCommand extends Command {
         const reply = await message.channel.send(
             new MessageEmbed()
                 .setTitle('Processing...')
-                .setColor(Util.resolveColor('BLUE'))
+                .setColor('BLUE')
         )
         const start = now();
         try {
@@ -23,7 +23,7 @@ export default class EvalCommand extends Command {
                 new MessageEmbed()
                     .setTitle(`Done in ${(now() - start).toFixed(3)}ms`)
                     .addField('Returns', `\`\`\`javascript\n${output}\`\`\``)
-                    .setColor(Util.resolveColor('GREEN'))
+                    .setColor('GREEN')
             );
         } catch (err) {
             console.log(err);
@@ -31,7 +31,7 @@ export default class EvalCommand extends Command {
                 new MessageEmbed()
                     .setTitle(`Error in ${(now() - start).toFixed(3)}ms`)
                     .addField('Error Message', `\`\`\`javascript\n${err}\`\`\``)
-                    .setColor(Util.resolveColor('RED'))
+                    .setColor('RED')
             );
         }
     }

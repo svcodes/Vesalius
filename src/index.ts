@@ -1,4 +1,4 @@
-import { VesaliusBot } from "./struct/VesaliusBot";
+import { VesaliusBot } from './struct/VesaliusBot';
 
 // Change Directory to right one
 if (!process.cwd().endsWith('build'))

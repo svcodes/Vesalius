@@ -1,5 +1,5 @@
-import { Command } from "discord-akairo";
-import { Collection, Message, MessageEmbed, Util } from "discord.js";
+import { Command } from 'discord-akairo';
+import { Collection, Message, MessageEmbed } from 'discord.js';
 
 export default class HelpCommand extends Command {
     constructor() {
@@ -15,7 +15,7 @@ export default class HelpCommand extends Command {
             commandCollection.get(value).push(key);
         });
         commandCollection.delete('eval'); // Hide debug command
-        const helpEmbed = new MessageEmbed().setColor(Util.resolveColor('BLUE')).setFooter('ik this isn\'t helpful yet');
+        const helpEmbed = new MessageEmbed().setColor('BLUE').setFooter('ik this isn\'t helpful yet');
 
         commandCollection.forEach((value, key) => {
             helpEmbed.addField(`\`${key}\``, `Aliases: \`${value.join('`, `')}\``);

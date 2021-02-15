@@ -1,7 +1,7 @@
-import { Collection } from "discord.js";
-import { Snowflake } from "discord.js";
-import { Pool } from "pg";
-import { VesaliusBot } from "./VesaliusBot";
+import { Collection } from 'discord.js';
+import { Snowflake } from 'discord.js';
+import { Pool } from 'pg';
+import { VesaliusBot } from './VesaliusBot';
 
 export interface GuildSchema {
     id: Snowflake;
@@ -16,7 +16,7 @@ export interface DatabaseCache {
 
 export class DatabaseManager {
     public pool: Pool;
-    public query: Pool["query"];
+    public query: Pool['query'];
     public cache: DatabaseCache;
 
     constructor(public client: VesaliusBot) {
@@ -35,7 +35,7 @@ export class DatabaseManager {
         tables.rows.forEach(row => this.cache[row] = []);
         const guildsTable = tables.rows.find(row => row.tablename === 'guilds');
         if (!guildsTable) {
-            console.log("Table 'guilds' doesn't exist, creating...");
+            console.log('Table \'guilds\' doesn\'t exist, creating...');
             await this.query(`
                 CREATE TABLE IF NOT EXISTS guilds (
                     id VARCHAR NOT NULL PRIMARY KEY,

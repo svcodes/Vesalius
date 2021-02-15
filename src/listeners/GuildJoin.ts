@@ -18,7 +18,7 @@ export default class GuildJoinListener extends Listener {
             WHERE id=$1
         `, [guild.id]);
         if (guildAddQuery.rowCount === 0) {
-            console.log("Joined new guild, making database entry...")
+            console.log('Joined new guild, making database entry...')
             await client.database.query(`
                 INSERT INTO guilds (id, disabledmodules, prefix)
                 VALUES (

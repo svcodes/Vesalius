@@ -1,7 +1,6 @@
-import { throws } from "assert";
-import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from "discord-akairo";
-import { Snowflake } from "discord.js";
-import { DatabaseManager } from "./Database";
+import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from 'discord-akairo';
+import { Snowflake } from 'discord.js';
+import { DatabaseManager } from './Database';
 
 
 export type databaseOptions = Partial<{

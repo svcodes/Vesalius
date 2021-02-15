@@ -1,5 +1,5 @@
-import { Command } from "discord-akairo";
-import { Message, MessageEmbed, Util } from "discord.js";
+import { Command } from 'discord-akairo';
+import { Message, MessageEmbed } from 'discord.js';
 
 export default class PingCommand extends Command {
     constructor() {
@@ -13,7 +13,7 @@ export default class PingCommand extends Command {
             new MessageEmbed()
                 .setTitle(`Pong!`)
                 .setDescription(`Bot WebSocket ping is ${message.client.ws.ping}ms`)
-                .setColor(message.client.ws.ping < 500 ? Util.resolveColor('GREEN') : Util.resolveColor('RED'))
+                .setColor(message.client.ws.ping < 500 ? 'GREEN' : 'RED')
         );
     }
 }

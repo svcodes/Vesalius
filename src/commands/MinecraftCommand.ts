@@ -1,8 +1,8 @@
-import { Command } from "discord-akairo";
-import { Message, MessageEmbed, Util } from "discord.js";
-import { VesaliusBot } from "../struct/VesaliusBot";
-import { status as getStatus } from "minecraft-server-util";
-import { StatusResponse } from "minecraft-server-util/dist/model/StatusResponse";
+import { Command } from 'discord-akairo';
+import { Message, MessageEmbed } from 'discord.js';
+import { VesaliusBot } from '../struct/VesaliusBot';
+import { status as getStatus } from 'minecraft-server-util';
+import { StatusResponse } from 'minecraft-server-util/dist/model/StatusResponse';
 
 const forbiddenAddresses: RegExp = /^(192\.(168|1(8|9))\.\d{1,3}\.\d{1,3})|(localhost)|(255\.255\.255\.255)|((10|127)\.\d{1,3}\.\d{1,3}\.\d{1,3})/i;
 
@@ -26,7 +26,7 @@ export default class MinecraftCommand extends Command {
                 if (subcommands[1].length > 256) {
                     message.channel.send(
                         new MessageEmbed()
-                            .setColor(Util.resolveColor('RED'))
+                            .setColor('RED')
                             .setTitle('Address is too long!')
                             .setDescription('Server addresses must be no more than 256 characters in length')
                     );
@@ -35,25 +35,25 @@ export default class MinecraftCommand extends Command {
                         if (forbiddenAddresses.test(subcommands[1].split(':')[0])) {
                             message.channel.send(
                                 new MessageEmbed()
-                                    .setColor(Util.resolveColor("RED"))
-                                    .setTitle("What are you trying to do?")
-                                    .setDescription("This address is forbidden to be used.")
+                                    .setColor('RED')
+                                    .setTitle('What are you trying to do?')
+                                    .setDescription('This address is forbidden to be used.')
                             );
                             return;
                         }
                         const address = await client.database.setDefaultMinecraftAddress(message.guild.id, subcommands[1]);
                         message.channel.send(
                             new MessageEmbed()
-                                .setColor(Util.resolveColor('GREEN'))
+                                .setColor('GREEN')
                                 .setTitle('Changes successful!')
                                 .setDescription(`Default Minecraft address is now \`${address}\``)
                         );
                     } else {
                         message.channel.send(
                             new MessageEmbed()
-                                .setColor(Util.resolveColor("RED"))
-                                .setTitle("You don't have permission to do this!")
-                                .setDescription("Only members with Manage Server permission are allowed to do this")
+                                .setColor('RED')
+                                .setTitle('You don\'t have permission to do this!')
+                                .setDescription('Only members with Manage Server permission are allowed to do this')
                         );
                     }
                 }
@@ -63,9 +63,9 @@ export default class MinecraftCommand extends Command {
                 if (forbiddenAddresses.test(host)) {
                     message.channel.send(
                         new MessageEmbed()
-                            .setColor(Util.resolveColor("RED"))
-                            .setTitle("What are you trying to do?")
-                            .setDescription("This address is forbidden to be used.")
+                            .setColor('RED')
+                            .setTitle('What are you trying to do?')
+                            .setDescription('This address is forbidden to be used.')
                     );
                     return;
                 }
@@ -82,7 +82,7 @@ export default class MinecraftCommand extends Command {
             if (address === null) {
                 message.channel.send(
                     new MessageEmbed()
-                        .setColor(Util.resolveColor('YELLOW'))
+                        .setColor('YELLOW')
                         .setTitle('Default address has not been set!')
                         .setDescription('If you believe this is in error, ask a server administrator to set one.')
                 );
@@ -130,7 +130,7 @@ export default class MinecraftCommand extends Command {
             }
         }
         const embed = new MessageEmbed()
-            .setColor(Util.resolveColor('GREEN'))
+            .setColor('GREEN')
             .setTitle('Server Status')
             .setFooter(`Server Address: ${address}`)
             .addField('Status', 'Online', true)
@@ -163,7 +163,7 @@ export default class MinecraftCommand extends Command {
         if (typeof err === 'undefined') {
             message.channel.send(
                 new MessageEmbed()
-                    .setColor(Util.resolveColor('RED'))
+                    .setColor('RED')
                     .setTitle('The server seems to be offline')
                     .setDescription(`Please check that the server address is spelled right.`)
                     .setTimestamp()
@@ -173,7 +173,7 @@ export default class MinecraftCommand extends Command {
             case 'ENOTFOUND':
                 message.channel.send(
                     new MessageEmbed()
-                        .setColor(Util.resolveColor('RED'))
+                        .setColor('RED')
                         .setTitle('The server address provided is invalid')
                         .setDescription(`The address you provided, \`${address}\`, is invalid. Please check that it is spelled right.`)
                 );
@@ -181,7 +181,7 @@ export default class MinecraftCommand extends Command {
             case 'ECONNREFUSED':
                 message.channel.send(
                     new MessageEmbed()
-                        .setColor(Util.resolveColor('RED'))
+                        .setColor('RED')
                         .setTitle('The server is refusing connections')
                         .setDescription(`The server might be offline.\nPlease check that the server address is spelled right.`)
                         .setTimestamp()
@@ -190,7 +190,7 @@ export default class MinecraftCommand extends Command {
             default:
                 message.channel.send(
                     new MessageEmbed()
-                        .setColor(Util.resolveColor('RED'))
+                        .setColor('RED')
                         .setTitle('An unexpected error occurred')
                         .setDescription('Please report this error at [the Github](https://github.com/SwanX1/Vesalius/issues).\nError Details:')
                         .addFields([
